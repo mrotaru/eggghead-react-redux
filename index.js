@@ -1,7 +1,7 @@
 let MiniRedux = (function () {
   let Store = {
     dispatch: function (action) {
-      this.state = this.reducer(action)
+      this.state = this.reducer(this.state, action)
       for (let subscriber of this.subscribers) {
         subscriber()
       }
@@ -17,8 +17,8 @@ let MiniRedux = (function () {
   return {
     createStore: (_reducer) => {
       return Object.assign(Object.create(Store), {
-        state: {},
-        reducer: null,
+        state: _reducer(),
+        reducer: _reducer,
         subscribers: []
       })
     }
@@ -28,9 +28,9 @@ let MiniRedux = (function () {
 let { createStore } = MiniRedux
 
 let counterReducer = (state = { count: 0 }, action) => {
-  if (action.type === 'INCREMENT') return { count: state.count + 1 }
-  if (action.type === 'DECREMENT') return { count: state.count - 1 }
-  return undefined
+  if (action && action.type === 'INCREMENT') return { count: state.count + 1 }
+  if (action && action.type === 'DECREMENT') return { count: state.count - 1 }
+  return state
 }
 
 let store = createStore(counterReducer)
@@ -39,4 +39,6 @@ store.subscribe(() => {
   document.body.innerText = store.getState().count
 })
 
-
+document.addEventListener('click', () => {
+  store.dispatch({ type: 'INCREMENT' })
+})
