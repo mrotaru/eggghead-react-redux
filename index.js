@@ -23,3 +23,22 @@ render()
 document.addEventListener('click', () => {
   store.dispatch({ type: 'INCREMENT' })
 })
+
+
+let a = [1, 2, 3, 4, 5]
+let i = 1
+console.log(a.splice(i, 1)) // mutating ! 
+
+// remove i, not mutating
+a = [1, 2, 3, 4, 5]
+console.log([
+  ...a.slice(0, i),
+  ...a.slice(i + 1)
+])
+
+// change element at i
+console.log([
+  ...a.slice(0, i),
+  a[i] + 10,
+  ...a.slice(i + 1)
+])
