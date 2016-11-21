@@ -103,20 +103,15 @@ class TodoApp extends React.Component {
           })
           this.input.value = ''
         }}>Add</button>
-        <ul>
-          {visibleTodos.map((t) => (
-            <li
-              key={t.id}
-              style={{ textDecoration: t.completed ? 'line-through' : 'none' }}
-              onClick={() => {
-                store.dispatch({
-                  type: 'TOGGLE_TODO',
-                  id: t.id
-                })
-              }}
-            >{t.text}</li>
-          ))}
-        </ul>
+        <TodoList
+          todos={visibleTodos}
+          onTodoClick={(id) => {
+            store.dispatch({
+              type: 'TOGGLE_TODO',
+              id
+            })
+          }}
+        />
         <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter}>All</FilterLink>{' '}
         <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter}>Completed</FilterLink>{' '}
         <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter}>Active</FilterLink>{' '}
