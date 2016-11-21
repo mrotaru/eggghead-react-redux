@@ -26,18 +26,31 @@ const todos = (state = [], action) => {
         todo(undefined, action)
       ]
     case 'REMOVE_TODO':
-      return [
-        ...state.slice(0, i),
-        ...state.slice(i + 1)
-      ]
+      return state.filter((t) => t.id !== action.id)
     case 'TOGGLE_TODO':
-      return [
-        ...state.slice(0, i),
-        todo(state[i], action),
-        ...state.slice(i + 1)
-      ]
+      return state.map((t) => {
+        if (t.id !== action.id) {
+          return state
+        }
+        return todo(t, action)
+      })
     default:
       return state
+  }
+}
+
+const combineReducers = (reducers) => {
+  return (state = {}, action) => {
+    return Object.keys(reducers).reduce(
+      (nextState, key) => {
+        nextState[key] = reducers[key](
+          state[key],
+          action
+        )
+        return nextState
+      },
+      {}
+    )
   }
 }
 
@@ -50,9 +63,10 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
   }
 }
 
-const todoApp = (state = {}, action) => ({
-  todos: todos(state.todos, action),
-  visibilityFilter: visibilityFilter(state.visibilityFilter, action)
+// const todoApp = Redux.combineReducers({
+const todoApp = combineReducers({
+  todos,
+  visibilityFilter
 })
 
 let store = Redux.createStore(todoApp)
