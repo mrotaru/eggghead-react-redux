@@ -41,7 +41,21 @@ const todos = (state = [], action) => {
   }
 }
 
-let store = Redux.createStore(todos)
+const visibilityFilter = (state = 'SHOW_ALL', action) => {
+  switch (action.type) {
+    case 'SET_VISIBILITY_FILTER':
+      return action.filter
+    default:
+      return state
+  }
+}
+
+const todoApp = (state = {}, action) => ({
+  todos: todos(state.todos, action),
+  visibilityFilter: visibilityFilter(state.visibilityFilter, action)
+})
+
+let store = Redux.createStore(todoApp)
 
 let render = () => (
   ReactDOM.render(
@@ -61,7 +75,7 @@ store.dispatch({
   id: t1.id,
   text: t1.text
 })
-console.assert(lodash.isequal(store.getState(), [
+console.assert(lodash.isequal(store.getState().todos, [
   Object.assign({}, t1, { completed: false })
 ]))
 
@@ -70,7 +84,7 @@ store.dispatch({
   type: 'TOGGLE_TODO',
   id: t1.id
 })
-console.assert(lodash.isequal(store.getState(), [
+console.assert(lodash.isequal(store.getState().todos, [
   Object.assign({}, t1, { completed: true })
 ]))
 
@@ -79,7 +93,7 @@ store.dispatch({
   type: 'REMOVE_TODO',
   id: t1.id
 })
-console.assert(lodash.isequal(store.getState(), []))
+console.assert(lodash.isequal(store.getState().todos, []))
 
 store.subscribe(() => render())
 render()
