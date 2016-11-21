@@ -1,24 +1,39 @@
+const todo = (state, action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return {
+        id: action.id,
+        text: action.text,
+        completed: false
+      }
+    case 'TOGGLE_TODO':
+      return {
+        id: state.id,
+        text: state.text,
+        completed: !state.completed
+      }
+    default:
+      return state
+  }
+}
+
 const todos = (state = [], action) => {
   let i = action.id ? state.findIndex((todo) => todo.id === action.id) : -1
   switch (action.type) {
     case 'ADD_TODO':
       return [
         ...state,
-        {
-          id: action.id,
-          text: action.text,
-          completed: false
-        }
+        todo(undefined, action)
       ]
     case 'REMOVE_TODO':
       return [
         ...state.slice(0, i),
         ...state.slice(i + 1)
       ]
-    case 'DONE_TODO':
+    case 'TOGGLE_TODO':
       return [
         ...state.slice(0, i),
-        Object.assign({}, state[i], { completed: true }),
+        todo(state[i], action),
         ...state.slice(i + 1)
       ]
     default:
@@ -52,7 +67,7 @@ console.assert(lodash.isequal(store.getState(), [
 
 // test marking as completed
 store.dispatch({
-  type: 'DONE_TODO',
+  type: 'TOGGLE_TODO',
   id: t1.id
 })
 console.assert(lodash.isequal(store.getState(), [
