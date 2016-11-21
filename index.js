@@ -57,8 +57,12 @@ let store = Redux.createStore(todoApp)
 
 const FilterLink = ({
   filter,
+  currentFilter,
   children
 }) => {
+  if (filter === currentFilter) {
+    return <span>{children}</span>
+  }
   return (
     <a
       href='#'
@@ -72,9 +76,20 @@ const FilterLink = ({
   )
 }
 
+const getVisibleTodos = () => {
+  let state = store.getState()
+  switch (state.visibilityFilter) {
+    case 'SHOW_ALL': return state.todos
+    case 'SHOW_ACTIVE': return state.todos.filter((t) => t.completed !== true)
+    case 'SHOW_COMPLETED': return state.todos.filter((t) => t.completed === true)
+  }
+}
+
 let id = 0
 class TodoApp extends React.Component {
   render () {
+    let { visibilityFilter, todos } = this.props
+    let visibleTodos = getVisibleTodos(visibilityFilter, todos)
     return (
       <div>
         <input ref={(node) => {
@@ -89,7 +104,7 @@ class TodoApp extends React.Component {
           this.input.value = ''
         }}>Add</button>
         <ul>
-          {this.props.todos.map((t) => (
+          {visibleTodos.map((t) => (
             <li
               key={t.id}
               style={{ textDecoration: t.completed ? 'line-through' : 'none' }}
@@ -102,25 +117,17 @@ class TodoApp extends React.Component {
             >{t.text}</li>
           ))}
         </ul>
-        <FilterLink filter='SHOW_ALL'>All</FilterLink>{' '}
-        <FilterLink filter='SHOW_COMPLETED'>Completed</FilterLink>{' '}
-        <FilterLink filter='SHOW_ACTIVE'>Active</FilterLink>{' '}
+        <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter}>All</FilterLink>{' '}
+        <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter}>Completed</FilterLink>{' '}
+        <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter}>Active</FilterLink>{' '}
       </div>
     )
   }
 }
 
 let render = () => {
-  const getVisibleTodos = () => {
-    let state = store.getState()
-    switch (state.visibilityFilter) {
-      case 'SHOW_ALL': return state.todos
-      case 'SHOW_ACTIVE': return state.todos.filter((t) => t.completed !== true)
-      case 'SHOW_COMPLETED': return state.todos.filter((t) => t.completed === true)
-    }
-  }
   return ReactDOM.render(
-    <TodoApp todos={getVisibleTodos()} />,
+    <TodoApp {...store.getState()} />,
     document.getElementById('root')
   )
 }
