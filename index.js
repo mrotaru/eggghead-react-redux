@@ -18,7 +18,6 @@ const todo = (state, action) => {
 }
 
 const todos = (state = [], action) => {
-  let i = action.id ? state.findIndex((todo) => todo.id === action.id) : -1
   switch (action.type) {
     case 'ADD_TODO':
       return [
@@ -30,7 +29,7 @@ const todos = (state = [], action) => {
     case 'TOGGLE_TODO':
       return state.map((t) => {
         if (t.id !== action.id) {
-          return state
+          return t
         }
         return todo(t, action)
       })
@@ -56,6 +55,23 @@ const todoApp = Redux.combineReducers({
 
 let store = Redux.createStore(todoApp)
 
+const FilterLink = ({
+  filter,
+  children
+}) => {
+  return (
+    <a
+      href='#'
+      onClick={(e) => {
+        store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter
+        })
+      }}
+    >{filter}</a>
+  )
+}
+
 let id = 0
 class TodoApp extends React.Component {
   render () {
@@ -74,20 +90,37 @@ class TodoApp extends React.Component {
         }}>Add</button>
         <ul>
           {this.props.todos.map((t) => (
-            <li key={t.id}>{t.text}</li>
+            <li
+              key={t.id}
+              style={{ textDecoration: t.completed ? 'line-through' : 'none' }}
+              onClick={() => {
+                store.dispatch({
+                  type: 'TOGGLE_TODO',
+                  id: t.id
+                })
+              }}
+            >{t.text}</li>
           ))}
         </ul>
+        <FilterLink filter='SHOW_ALL' />
+        <FilterLink filter='SHOW_DONE' />
       </div>
     )
   }
 }
 
-let render = () => (
-  ReactDOM.render(
-    <TodoApp todos={store.getState().todos} />,
+let render = () => {
+  const getTodos = (filter) => {
+    switch (filter) {
+      case 'SHOW_ALL': return store.getState().todos
+      case 'SHOW_DONE': return store.getState().todos.filter((t) => t.completed === true)
+    }
+  }
+  return ReactDOM.render(
+    <TodoApp todos={getTodos(store.getState().visibilityFilter)} />,
     document.getElementById('root')
   )
-)
+}
 
 let t1 = {
   id: 1,
