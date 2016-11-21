@@ -39,21 +39,6 @@ const todos = (state = [], action) => {
   }
 }
 
-const combineReducers = (reducers) => {
-  return (state = {}, action) => {
-    return Object.keys(reducers).reduce(
-      (nextState, key) => {
-        nextState[key] = reducers[key](
-          state[key],
-          action
-        )
-        return nextState
-      },
-      {}
-    )
-  }
-}
-
 const visibilityFilter = (state = 'SHOW_ALL', action) => {
   switch (action.type) {
     case 'SET_VISIBILITY_FILTER':
@@ -64,16 +49,42 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
 }
 
 // const todoApp = Redux.combineReducers({
-const todoApp = combineReducers({
+const todoApp = Redux.combineReducers({
   todos,
   visibilityFilter
 })
 
 let store = Redux.createStore(todoApp)
 
+let id = 0
+class TodoApp extends React.Component {
+  render () {
+    return (
+      <div>
+        <input ref={(node) => {
+          this.input = node
+        }} />
+        <button onClick={() => {
+          store.dispatch({
+            type: 'ADD_TODO',
+            text: this.input.value,
+            id: id++
+          })
+          this.input.value = ''
+        }}>Add</button>
+        <ul>
+          {this.props.todos.map((t) => (
+            <li key={t.id}>{t.text}</li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+}
+
 let render = () => (
   ReactDOM.render(
-    <h1>Hello</h1>,
+    <TodoApp todos={store.getState().todos} />,
     document.getElementById('root')
   )
 )
