@@ -1,10 +1,7 @@
-// const todoApp = Redux.combineReducers({
-const todoApp = Redux.combineReducers({
-  todos,
-  visibilityFilter
-})
+const { Provider } = ReactRedux
 
 let id = 0
+
 const TodoApp = () => (
   <div>
     <AddTodo />

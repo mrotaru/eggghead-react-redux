@@ -46,3 +46,8 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
       return state
   }
 }
+
+const todoApp = Redux.combineReducers({
+  todos,
+  visibilityFilter
+})
