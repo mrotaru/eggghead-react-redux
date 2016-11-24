@@ -1,25 +1,10 @@
-const Link = ({ active, children, onClick }) => {
-  if (active) {
-    return <span>{children}</span>
-  }
-  return (
-    <a
-      href='#'
-      onClick={(e) => {
-        e.preventDefault()
-        onClick()
-      }}
-    >{children}</a>
-  )
-}
-
 class FilterLink extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.unsubscribe = store.subscribe(() =>{
       this.forceUpdate()
     })
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.unsubscribe()
   }
   render () {

@@ -55,44 +55,12 @@ const todoApp = Redux.combineReducers({
 
 var store = Redux.createStore(todoApp)
 
-
-const getVisibleTodos = () => {
-  let state = store.getState()
-  switch (state.visibilityFilter) {
-    case 'SHOW_ALL': return state.todos
-    case 'SHOW_ACTIVE': return state.todos.filter((t) => t.completed !== true)
-    case 'SHOW_COMPLETED': return state.todos.filter((t) => t.completed === true)
-  }
-}
-
 let id = 0
-const TodoApp = ({ visibilityFilter, todos }) => (
+const TodoApp = () => (
   <div>
-    <AddTodo
-      onAddClick={(text) => {
-        store.dispatch({
-          type: 'ADD_TODO',
-          text,
-          id: id++
-        })
-      }} />
-    <TodoList
-      todos={getVisibleTodos(visibilityFilter)}
-      onTodoClick={(id) => {
-        store.dispatch({
-          type: 'TOGGLE_TODO',
-          id
-        })
-      }}
-    />
-    <Footer
-      onFilterClick={(filter) => {
-        store.dispatch({
-          type: 'SET_VISIBILITY_FILTER',
-          filter
-        })
-      }}
-      visibilityFilter={visibilityFilter} />
+    <AddTodo />
+    <VisibleTodoList />
+    <Footer />
   </div>
 )
 
