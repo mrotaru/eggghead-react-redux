@@ -1,4 +1,4 @@
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
   let input = null
   return (
     <div>
@@ -6,7 +6,7 @@ const AddTodo = (props, { store }) => {
         input = node
       }} />
       <button onClick={() => {
-        store.dispatch({
+        dispatch({
           type: 'ADD_TODO',
           text: input.value,
           id: id++
@@ -17,6 +17,4 @@ const AddTodo = (props, { store }) => {
   )
 }
 
-AddTodo.contextTypes = {
-  store: React.PropTypes.object
-}
+AddTodo = ReactRedux.connect()(AddTodo)
