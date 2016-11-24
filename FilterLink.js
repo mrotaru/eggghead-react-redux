@@ -1,31 +1,21 @@
-class FilterLink extends React.Component {
-  componentDidMount () {
-    const { store } = this.context
-    this.unsubscribe = store.subscribe(() =>{
-      this.forceUpdate()
-    })
-  }
-  componentWillUnmount () {
-    this.unsubscribe()
-  }
-  render () {
-    const props = this.props
-    const { store } = this.context
-    const state = store.getState()
-    return (
-      <Link
-        active={state.visibilityFilter === props.filter}
-        onClick={() => {
-          store.dispatch({
-            type: 'SET_VISIBILITY_FILTER',
-            filter: props.filter
-          })
-        }}
-      >{props.children}</Link>
-    )
+const mapStateToProps = (state, ownProps) => {
+  return {
+    active: ownProps.filter === state.visibilityFilter
   }
 }
 
-FilterLink.contextTypes = {
-  store: React.PropTypes.object
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    onClick: () => {
+      dispatch({
+        type: 'SET_VISIBILITY_FILTER',
+        filter: ownProps.filter
+      })
+    }
+  }
 }
+
+const FilterLink = ReactRedux.connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Link)
