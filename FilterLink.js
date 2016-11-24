@@ -1,5 +1,6 @@
 class FilterLink extends React.Component {
   componentDidMount () {
+    const { store } = this.context
     this.unsubscribe = store.subscribe(() =>{
       this.forceUpdate()
     })
@@ -9,6 +10,7 @@ class FilterLink extends React.Component {
   }
   render () {
     const props = this.props
+    const { store } = this.context
     const state = store.getState()
     return (
       <Link
@@ -22,4 +24,8 @@ class FilterLink extends React.Component {
       >{props.children}</Link>
     )
   }
+}
+
+FilterLink.contextTypes = {
+  store: React.PropTypes.object
 }

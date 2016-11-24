@@ -8,6 +8,7 @@ const getVisibleTodos = (todos, visibilityFilter) => {
 
 class VisibleTodoList extends React.Component {
   componentDidMount () {
+    const { store } = this.context
     this.unsubscribe = store.subscribe(() => {
       this.forceUpdate()
     })
@@ -16,6 +17,7 @@ class VisibleTodoList extends React.Component {
     this.unsubscribe()
   }
   render () {
+    const { store } = this.context
     const state = store.getState()
     return (
       <TodoList
@@ -29,4 +31,8 @@ class VisibleTodoList extends React.Component {
       />
     )
   }
+}
+
+VisibleTodoList.contextTypes = {
+  store: React.PropTypes.object
 }
