@@ -53,7 +53,7 @@ const todoApp = Redux.combineReducers({
   visibilityFilter
 })
 
-let store = Redux.createStore(todoApp)
+var store = Redux.createStore(todoApp)
 
 
 const getVisibleTodos = () => {
