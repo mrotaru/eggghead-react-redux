@@ -6,11 +6,7 @@ let AddTodo = ({ dispatch }) => {
         input = node
       }} />
       <button onClick={() => {
-        dispatch({
-          type: 'ADD_TODO',
-          text: input.value,
-          id: id++
-        })
+        dispatch(addTodo(input.value))
         input.value = ''
       }}>Add</button>
     </div>
