@@ -1,14 +1,13 @@
-const mapStateToProps = (state, ownProps) => ({
-  active: ownProps.filter === state.visibilityFilter
-})
+const { Link } = ReactRouter
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onClick () {
-    dispatch(setVisibibilityFilter(ownProps.filter))
-  }
-})
-
-const FilterLink = ReactRedux.connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Link)
+const FilterLink = ({ filter, children }) => (
+  <Link
+    to={filter === 'all' ? '' : filter}
+    activeStyle={{
+      textDecoration: 'none',
+      color: 'black'
+    }}
+  >
+    {children}
+  </Link>
+)

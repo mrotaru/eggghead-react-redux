@@ -7,7 +7,7 @@ const { Router, Route, browserHistory, hashHistory, IndexRoute } = ReactRouter
 const Root = ({ store }) => (
   <Provider store={store}>
     <Router history={hashHistory}>
-      <Route path='/' component={App} />
+      <Route path='/(:filter)' component={App} />
     </Router>
   </Provider>
 )
