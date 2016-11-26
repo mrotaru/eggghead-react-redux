@@ -1,23 +1,17 @@
 let id = 0
 
-const addTodo = (text) => {
-  return {
-    type: 'ADD_TODO',
-    text,
-    id: id++
-  }
-}
+const addTodo = (text) => ({
+  type: 'ADD_TODO',
+  text,
+  id: id++
+})
 
-const setVisibibilityFilter = (filter) => {
-  return {
-    type: 'SET_VISIBILITY_FILTER',
-    filter
-  }
-}
+const setVisibibilityFilter = (filter) => ({
+  type: 'SET_VISIBILITY_FILTER',
+  filter
+})
 
-const toggleTodo = (id) => {
-  return {
-    type: 'TOGGLE_TODO',
-    id
-  }
-}
+const toggleTodo = (id) => ({
+  type: 'TOGGLE_TODO',
+  id
+})
