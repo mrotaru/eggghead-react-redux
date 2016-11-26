@@ -1,9 +1,7 @@
-let id = 0
-
 const addTodo = (text) => ({
   type: 'ADD_TODO',
   text,
-  id: id++
+  id: uuid.v4()
 })
 
 const setVisibibilityFilter = (filter) => ({
