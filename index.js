@@ -10,20 +10,11 @@ const TodoApp = () => (
   </div>
 )
 
-const persistedState = loadState()
-const store = Redux.createStore(todoApp, persistedState)
-
-store.subscribe(lodash.throttle(() => {
-  saveState({
-    todos: store.getState().todos
-  })
-}))
+const store = configureStore()
 
 let render = () => {
   return ReactDOM.render(
-    <Provider store={store}>
-      <TodoApp />
-    </Provider>,
+    <Root store={store} />,
     document.getElementById('root')
   )
 }
