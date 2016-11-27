@@ -6,27 +6,17 @@ const getVisibleTodos = (todos, visibilityFilter) => {
   }
 }
 
-const mapStatetoProps = (state, { params }) => {
-  return {
-    todos: getVisibleTodos(
-      state.todos,
-      params.filter || 'all'
-    )
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onTodoClick: (id) => {
-      dispatch(toggleTodo(id))
-    }
-  }
-}
+const mapStatetoProps = (state, { params }) => ({
+  todos: getVisibleTodos(
+    state.todos,
+    params.filter || 'all'
+  )
+})
 
 const { connect } = ReactRedux
 const { withRouter } = ReactRouter
 
 const VisibleTodoList = withRouter(connect(
   mapStatetoProps,
-  mapDispatchToProps
+  { onTodoClick: toggleTodo }
 )(TodoList))
