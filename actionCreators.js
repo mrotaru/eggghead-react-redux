@@ -8,3 +8,11 @@ const toggleTodo = (id) => ({
   type: 'TOGGLE_TODO',
   id
 })
+
+const receiveTodos = (filter, response) => ({
+  type: 'RECEIVE_TODOS',
+  filter,
+  response
+})
+
+const actions = { addTodo, toggleTodo, receiveTodos }

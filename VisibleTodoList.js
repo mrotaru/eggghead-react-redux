@@ -1,18 +1,21 @@
 class VisibleTodoList extends React.Component {
-  componentDidMount () {
-    fetchTodos(this.props.filter).then(todos =>
-      console.log(this.props.filter, todos)
+  fetchData () {
+    const { filter, receiveTodos } = this.props
+    fetchTodos(filter).then(todos =>
+      receiveTodos(todos, filter)
     )
+  }
+  componentDidMount () {
+    this.fetchData()
   }
   componentDidUpdate (prevProps) {
     if (this.props.filter !== prevProps.filter) {
-      fetchTodos(this.props.filter).then(todos =>
-        console.log(this.props.filter, todos)
-      )
+      this.fetchData()
     }
   }
   render () {
-    return <TodoList {...this.props} />
+    const { toggleTodo, ...rest } = this.props
+    return <TodoList {...rest} onTodoClick={toggleTodo} />
   }
 }
 
@@ -29,5 +32,5 @@ const { withRouter } = ReactRouter
 
 VisibleTodoList = withRouter(connect(
   mapStatetoProps,
-  { onTodoClick: toggleTodo }
+  actions
 )(VisibleTodoList))
