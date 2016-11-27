@@ -1,14 +1,17 @@
 const getVisibleTodos = (todos, visibilityFilter) => {
   switch (visibilityFilter) {
-    case 'SHOW_ALL': return todos
-    case 'SHOW_ACTIVE': return todos.filter((t) => t.completed !== true)
-    case 'SHOW_COMPLETED': return todos.filter((t) => t.completed === true)
+    case 'all': return todos
+    case 'active': return todos.filter((t) => t.completed !== true)
+    case 'completed': return todos.filter((t) => t.completed === true)
   }
 }
 
-const mapStatetoProps = (state) => {
+const mapStatetoProps = (state, ownProps) => {
   return {
-    todos: getVisibleTodos(state.todos, state.visibilityFilter)
+    todos: getVisibleTodos(
+      state.todos,
+      ownProps.filter
+    )
   }
 }
 

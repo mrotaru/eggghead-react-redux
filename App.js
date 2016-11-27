@@ -1,8 +1,9 @@
-const App = () => (
+const App = ({ params }) => (
   <div>
-    <h1>Hello</h1>
     <AddTodo />
-    <VisibleTodoList />
+    <VisibleTodoList
+      filter={params.filter || 'all'}
+    />
     <Footer />
     <hr />
     <button onClick={() => localStorage.removeItem('state')}>Clear Local Data</button>

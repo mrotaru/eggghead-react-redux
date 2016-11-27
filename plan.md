@@ -8,9 +8,9 @@
 01:43 Redux: Adding React Router to the Project
 02:38 Redux: Navigating with React Router <Link>
 04:09 Redux: Filtering Redux State with React Router Params
-02:58 Redux: Using withRouter() to Inject the Params into Connected Components
 
 ## Sun
+02:58 Redux: Using withRouter() to Inject the Params into Connected Components
 01:49 Redux: Using mapDispatchToProps() Shorthand Notation
 04:52 Redux: Colocating Selectors with Reducers
 06:46 Redux: Normalizing the State Shape
