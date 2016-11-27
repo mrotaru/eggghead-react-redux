@@ -1,3 +1,14 @@
+let selectors = {
+  getVisibleTodos (state, visibilityFilter) {
+    switch (visibilityFilter) {
+      case 'all': return state
+      case 'active': return state.filter((t) => t.completed !== true)
+      case 'completed': return state.filter((t) => t.completed === true)
+    }
+  }
+}
+
+// reducer for a single todo item
 const todo = (state, action) => {
   switch (action.type) {
     case 'ADD_TODO':
@@ -17,6 +28,7 @@ const todo = (state, action) => {
   }
 }
 
+// reducer for all todos
 const todos = (state = [], action) => {
   switch (action.type) {
     case 'ADD_TODO':
@@ -38,6 +50,12 @@ const todos = (state = [], action) => {
   }
 }
 
+// root reducer
 const todoApp = Redux.combineReducers({
   todos
 })
+
+// state = whole state; components can use this selector to getVisibleTodos
+// the slice of the state needed without caring about the sate shape.
+const getVisibleTodos = (state, filter) =>
+  selectors.getVisibleTodos(state.todos, filter)
