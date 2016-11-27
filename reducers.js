@@ -1,9 +1,13 @@
+const getAllTodos = (state) =>
+  state.allIds.map(id => state.byId[id])
+
 let selectors = {
   getVisibleTodos (state, visibilityFilter) {
+    const allTodos = getAllTodos(state)
     switch (visibilityFilter) {
-      case 'all': return state
-      case 'active': return state.filter((t) => t.completed !== true)
-      case 'completed': return state.filter((t) => t.completed === true)
+      case 'all': return allTodos
+      case 'active': return allTodos.filter((t) => t.completed !== true)
+      case 'completed': return allTodos.filter((t) => t.completed === true)
     }
   }
 }
@@ -29,22 +33,28 @@ const todo = (state, action) => {
 }
 
 // reducer for all todos
-const todos = (state = [], action) => {
+const byId = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_TODO':
-      return [
-        ...state,
-        todo(undefined, action)
-      ]
-    case 'REMOVE_TODO':
-      return state.filter((t) => t.id !== action.id)
-    case 'TOGGLE_TODO':
-      return state.map((t) => {
-        if (t.id !== action.id) {
-          return t
-        }
-        return todo(t, action)
+      return Object.assign({}, state, {
+        [action.id]: todo(undefined, action)
       })
+    case 'REMOVE_TODO':
+      delete state[action.id]
+      return Object.assign({}, state)
+    case 'TOGGLE_TODO':
+      return Object.assign({}, state, {
+        [action.id]: todo(state[action.id], action)
+      })
+    default:
+      return state
+  }
+}
+
+const allIds = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [...state, action.id]
     default:
       return state
   }
@@ -52,7 +62,10 @@ const todos = (state = [], action) => {
 
 // root reducer
 const todoApp = Redux.combineReducers({
-  todos
+  todos: Redux.combineReducers({
+    byId,
+    allIds
+  })
 })
 
 // state = whole state; components can use this selector to getVisibleTodos
