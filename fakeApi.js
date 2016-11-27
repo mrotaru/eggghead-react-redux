@@ -27,3 +27,5 @@ const fetchTodos = (filter) => {
     }
   })
 }
+
+const api = { fetchTodos }

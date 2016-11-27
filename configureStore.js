@@ -16,11 +16,22 @@ const addLoggingToDispatch = (store) => {
   }
 }
 
+const addPromiseSupportToDispatch = (store) => {
+  const originalDispatch = store.dispatch
+  return (action) => {
+    if (typeof action.then === 'function') {
+      return action.then(originalDispatch)
+    }
+    return originalDispatch(action)
+  }
+}
+
 const configureStore = () => {
   const persistedState = loadState()
   const store = Redux.createStore(todoApp, persistedState)
 
   store.dispatch = addLoggingToDispatch(store)
+  store.dispatch = addPromiseSupportToDispatch(store)
 
   store.subscribe(lodash.throttle(() => {
     saveState({
