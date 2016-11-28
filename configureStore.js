@@ -1,53 +1,22 @@
-const logger = (store) => {
-  return (next) => {
-    if (!console.group) {
-      return next
-    }
+const { createStore, applyMiddleware } = Redux
 
-    return (action) => {
-      console.group(action.type)
-      console.log('%c prev state', 'color: gray', store.getState())
-      console.log('%c action', 'color: blue', action)
-      const retVal = next(action)
-      console.log('%c next state', 'color: green', store.getState())
-      console.groupEnd(action.type)
-      return retVal
-    }
+const { reduxPromise, reduxLogger } = window
+
+const process = {
+  env: {
+    NODE_ENV: 'development'
   }
-}
-
-const promise = (store) => {
-  return (next) => {
-    return (action) => {
-      if (typeof action.then === 'function') {
-        return action.then(next)
-      }
-      return next(action)
-    }
-  }
-}
-
-const wrapDispatchWithMiddlewares = (store, middlewares) => {
-  middlewares.slice().reverse().forEach((middleware) => {
-    store.dispatch = middleware(store)(store.dispatch)
-  })
 }
 
 const configureStore = () => {
-  const store = Redux.createStore(todoApp, persistedState)
-  const middlewares = []
+  const middlewares = [reduxPromise]
+  if (process.env.NODE_ENV !== 'production') {
+    middlewares.push(reduxLogger())
+  }
 
-  middlewares.push(promise)
-  middlewares.push(logger)
-  wrapDispatchWithMiddlewares(store, middlewares)
-
-  const persistedState = loadState()
-
-  store.subscribe(lodash.throttle(() => {
-    saveState({
-      todos: store.getState().todos
-    })
-  }))
-
+  const store = createStore(
+    todoApp,
+    applyMiddleware(...middlewares)
+  )
   return store
 }
