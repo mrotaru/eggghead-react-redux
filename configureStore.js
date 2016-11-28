@@ -1,37 +1,47 @@
-const addLoggingToDispatch = (store) => {
-  const originalDispatch = store.dispatch
+const logger = (store) => {
+  return (next) => {
+    if (!console.group) {
+      return next
+    }
 
-  if (!console.group) {
-    return originalDispatch
-  }
-
-  return (action) => {
-    console.group(action.type)
-    console.log('%c prev state', 'color: gray', store.getState())
-    console.log('%c action', 'color: blue', action)
-    const retVal = originalDispatch(action)
-    console.log('%c next state', 'color: green', store.getState())
-    console.groupEnd(action.type)
-    return retVal
+    return (action) => {
+      console.group(action.type)
+      console.log('%c prev state', 'color: gray', store.getState())
+      console.log('%c action', 'color: blue', action)
+      const retVal = next(action)
+      console.log('%c next state', 'color: green', store.getState())
+      console.groupEnd(action.type)
+      return retVal
+    }
   }
 }
 
-const addPromiseSupportToDispatch = (store) => {
-  const originalDispatch = store.dispatch
-  return (action) => {
-    if (typeof action.then === 'function') {
-      return action.then(originalDispatch)
+const promise = (store) => {
+  return (next) => {
+    return (action) => {
+      if (typeof action.then === 'function') {
+        return action.then(next)
+      }
+      return next(action)
     }
-    return originalDispatch(action)
   }
+}
+
+const wrapDispatchWithMiddlewares = (store, middlewares) => {
+  middlewares.slice().reverse().forEach((middleware) => {
+    store.dispatch = middleware(store)(store.dispatch)
+  })
 }
 
 const configureStore = () => {
-  const persistedState = loadState()
   const store = Redux.createStore(todoApp, persistedState)
+  const middlewares = []
 
-  store.dispatch = addLoggingToDispatch(store)
-  store.dispatch = addPromiseSupportToDispatch(store)
+  middlewares.push(promise)
+  middlewares.push(logger)
+  wrapDispatchWithMiddlewares(store, middlewares)
+
+  const persistedState = loadState()
 
   store.subscribe(lodash.throttle(() => {
     saveState({
