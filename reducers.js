@@ -1,74 +1,73 @@
-const getAllTodos = (state) =>
-  state.allIds.map(id => state.byId[id])
-
 let selectors = {
-  getVisibleTodos (state, visibilityFilter) {
-    const allTodos = getAllTodos(state)
-    switch (visibilityFilter) {
-      case 'all': return allTodos
-      case 'active': return allTodos.filter((t) => t.completed !== true)
-      case 'completed': return allTodos.filter((t) => t.completed === true)
-    }
+  getVisibleTodos (state, filter) {
+    const ids = state.idsByFilter[filter]
+    return ids.map(id => state.byId[id])
   }
 }
 
-// reducer for a single todo item
-const todo = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TODO':
-      return {
-        id: action.id,
-        text: action.text,
-        completed: false
-      }
-    case 'TOGGLE_TODO':
-      return {
-        id: state.id,
-        text: state.text,
-        completed: !state.completed
-      }
-    default:
-      return state
-  }
-}
-
-// reducer for all todos
 const byId = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_TODO':
-      return Object.assign({}, state, {
-        [action.id]: todo(undefined, action)
+    case 'RECEIVE_TODOS':
+      const nextState = {...state}
+      action.response.map(todo => {
+        nextState[todo.id] = todo
       })
-    case 'REMOVE_TODO':
-      delete state[action.id]
-      return Object.assign({}, state)
-    case 'TOGGLE_TODO':
-      return Object.assign({}, state, {
-        [action.id]: todo(state[action.id], action)
-      })
+      return nextState
     default:
       return state
   }
 }
 
 const allIds = (state = [], action) => {
+  if (action.filter !== 'all') {
+    return state
+  }
   switch (action.type) {
-    case 'ADD_TODO':
-      return [...state, action.id]
+    case 'RECEIVE_TODOS':
+      return action.response.map(todo => todo.id)
+    default:
+      return state
+  }
+}
+const completedIds = (state = [], action) => {
+  if (action.filter !== 'completed') {
+    return state
+  }
+  switch (action.type) {
+    case 'RECEIVE_TODOS':
+      return action.response.map(todo => todo.id)
+    default:
+      return state
+  }
+}
+const activeIds = (state = [], action) => {
+  if (action.filter !== 'active') {
+    return state
+  }
+  switch (action.type) {
+    case 'RECEIVE_TODOS':
+      return action.response.map(todo => todo.id)
     default:
       return state
   }
 }
 
+
+const idsByFilter = Redux.combineReducers({
+  all: allIds,
+  completed: completedIds,
+  active: activeIds
+})
+
 // root reducer
 const todoApp = Redux.combineReducers({
   todos: Redux.combineReducers({
-    byId,
-    allIds
+    idsByFilter,
+    byId
   })
 })
 
-// state = whole state; components can use this selector to getVisibleTodos
-// the slice of the state needed without caring about the sate shape.
+// state = whole state; this selector abstracts away state shape
+// from the components
 const getVisibleTodos = (state, filter) =>
   selectors.getVisibleTodos(state.todos, filter)
