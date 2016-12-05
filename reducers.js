@@ -1,73 +1,25 @@
-let selectors = {
-  getVisibleTodos (state, filter) {
-    const ids = state.idsByFilter[filter]
-    return ids.map(id => state.byId[id])
-  }
+const { combineReducers } = Redux
+const { createList, getIds } = fromCreateList
+const { byId, getTodo } = fromById
+
+// listByFilter is defined in this file, so we can make
+// assumptions of how to get it from the state. But, `byId`
+// reducer is defined elsewhere, so we use a selector it exports.
+// We pass the sub-state as a parameter; we know where it is because
+// it is set as part of the root reducer, also defined in this file.
+const getVisibleTodos = (state, filter) => {
+  const ids = getIds(state.listByFilter[filter])
+  return ids.map(id => getTodo(state.byId, id))
 }
 
-const byId = (state = {}, action) => {
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      const nextState = {...state}
-      action.response.map(todo => {
-        nextState[todo.id] = todo
-      })
-      return nextState
-    default:
-      return state
-  }
-}
-
-const allIds = (state = [], action) => {
-  if (action.filter !== 'all') {
-    return state
-  }
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      return action.response.map(todo => todo.id)
-    default:
-      return state
-  }
-}
-const completedIds = (state = [], action) => {
-  if (action.filter !== 'completed') {
-    return state
-  }
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      return action.response.map(todo => todo.id)
-    default:
-      return state
-  }
-}
-const activeIds = (state = [], action) => {
-  if (action.filter !== 'active') {
-    return state
-  }
-  switch (action.type) {
-    case 'RECEIVE_TODOS':
-      return action.response.map(todo => todo.id)
-    default:
-      return state
-  }
-}
-
-
-const idsByFilter = Redux.combineReducers({
-  all: allIds,
-  completed: completedIds,
-  active: activeIds
+const listByFilter = combineReducers({
+  all: createList('all'),
+  completed: createList('completed'),
+  active: createList('active')
 })
 
 // root reducer
-const todoApp = Redux.combineReducers({
-  todos: Redux.combineReducers({
-    idsByFilter,
-    byId
-  })
+const todoApp = combineReducers({
+  byId,
+  listByFilter
 })
-
-// state = whole state; this selector abstracts away state shape
-// from the components
-const getVisibleTodos = (state, filter) =>
-  selectors.getVisibleTodos(state.todos, filter)
