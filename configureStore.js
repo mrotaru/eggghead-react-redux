@@ -8,8 +8,13 @@ const process = {
   }
 }
 
+const thunk = (store) => (next) => (action) =>
+  typeof action === 'function'
+    ? action(store.dispatch)
+    : next(action)
+
 const configureStore = () => {
-  const middlewares = [reduxPromise]
+  const middlewares = [thunk]
   if (process.env.NODE_ENV !== 'production') {
     middlewares.push(reduxLogger())
   }
