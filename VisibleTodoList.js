@@ -1,6 +1,7 @@
 class VisibleTodoList extends React.Component {
   fetchData () {
-    const { filter, fetchTodos } = this.props
+    const { filter, requestTodos, fetchTodos } = this.props
+    requestTodos(filter)
     fetchTodos(filter)
   }
   componentDidMount () {
@@ -12,8 +13,16 @@ class VisibleTodoList extends React.Component {
     }
   }
   render () {
-    const { toggleTodo, ...rest } = this.props
-    return <TodoList {...rest} onTodoClick={toggleTodo} />
+    const { toggleTodo, todos, isFetching } = this.props
+    if (isFetching && !todos.length) {
+      return <p>Loading...</p>
+    }
+    return (
+      <TodoList
+        todos={todos}
+        onTodoClick={toggleTodo}
+      />
+    )
   }
 }
 
@@ -21,6 +30,7 @@ const mapStatetoProps = (state, { params }) => {
   const filter = params.filter || 'all'
   return {
     todos: getVisibleTodos(state, filter),
+    isFetching: getIsFetching(state, filter),
     filter
   }
 }

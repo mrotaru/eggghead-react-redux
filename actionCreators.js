@@ -9,6 +9,11 @@ const toggleTodo = (id) => ({
   id
 })
 
+const requestTodos = (filter) => ({
+  type: 'REQUEST_TODOS',
+  filter
+})
+
 const receiveTodos = (filter, response) => ({
   type: 'RECEIVE_TODOS',
   filter,
@@ -20,4 +25,4 @@ const fetchTodos = (filter) =>
     receiveTodos(filter, response)
   )
 
-const actions = { addTodo, toggleTodo, fetchTodos }
+const actions = { addTodo, toggleTodo, fetchTodos, requestTodos }
