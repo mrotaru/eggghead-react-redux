@@ -18,7 +18,7 @@ const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms))
 
 const fetchTodos = (filter) => {
-  return delay(500).then(() => {
+  return delay(5000).then(() => {
     switch (filter) {
       case 'all': return fakeDatabase.todos
       case 'active': return fakeDatabase.todos.filter((t) => t.completed !== true)

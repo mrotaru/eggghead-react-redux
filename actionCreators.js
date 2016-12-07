@@ -20,9 +20,14 @@ const receiveTodos = (filter, response) => ({
   response
 })
 
-const fetchTodos = (filter) =>
-  api.fetchTodos(filter).then(response =>
-    receiveTodos(filter, response)
+const fetchTodos = (filter) => (dispatch, getState) => {
+  if (getIsFetching(getState(), filter)) {
+    return
+  }
+  dispatch(requestTodos(filter))
+  return api.fetchTodos(filter).then(response =>
+    dispatch(receiveTodos(filter, response))
   )
+}
 
 const actions = { addTodo, toggleTodo, fetchTodos, requestTodos }
