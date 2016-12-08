@@ -26,3 +26,6 @@ const getVisibleTodos = (state, filter) => {
 
 const getIsFetching = (state, filter) =>
   fromCreateList.getIsFetching(state.listByFilter[filter])
+
+const getErrorMessage = (state, filter) =>
+  fromCreateList.getErrorMessage(state.listByFilter[filter])

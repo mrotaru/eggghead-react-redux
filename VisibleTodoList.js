@@ -12,10 +12,19 @@ class VisibleTodoList extends React.Component {
     }
   }
   render () {
-    const { toggleTodo, todos, isFetching } = this.props
+    const { toggleTodo, errorMessage, todos, isFetching } = this.props
     if (isFetching && !todos.length) {
       return <p>Loading...</p>
     }
+    if (errorMessage && !todos.length) {
+      return (
+        <FetchError
+          message={errorMessage}
+          onRetry={() => this.fetchData()}
+        />
+      )
+    }
+
     return (
       <TodoList
         todos={todos}
@@ -29,6 +38,7 @@ const mapStatetoProps = (state, { params }) => {
   const filter = params.filter || 'all'
   return {
     todos: getVisibleTodos(state, filter),
+    errorMessage: getErrorMessage(state, filter),
     isFetching: getIsFetching(state, filter),
     filter
   }
