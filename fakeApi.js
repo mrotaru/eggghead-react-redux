@@ -19,9 +19,9 @@ const delay = (ms) =>
 
 const fetchTodos = (filter) => {
   return delay(1500).then(() => {
-    if (Math.random() > 0.5) {
-      throw new Error('Boom!')
-    }
+    // if (Math.random() > 0.5) {
+    //   throw new Error('Boom!')
+    // }
     switch (filter) {
       case 'all': return fakeDatabase.todos
       case 'active': return fakeDatabase.todos.filter((t) => t.completed !== true)

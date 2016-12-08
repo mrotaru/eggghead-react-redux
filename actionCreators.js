@@ -24,9 +24,7 @@ const fetchTodos = (filter) => (dispatch, getState) => {
       type: 'FETCH_TODOS_SUCCESS',
       filter,
       response
-    })
-  , error => {
-    console.log('api failed:', error)
+    }), error => {
     dispatch({
       type: 'FETCH_TODOS_ERROR',
       filter,
