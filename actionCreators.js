@@ -1,14 +1,3 @@
-const addTodo = (text) => ({
-  type: 'ADD_TODO',
-  text,
-  id: uuid.v4()
-})
-
-const toggleTodo = (id) => ({
-  type: 'TOGGLE_TODO',
-  id
-})
-
 const fetchTodos = (filter) => (dispatch, getState) => {
   if (getIsFetching(getState(), filter)) {
     return Promise.resolve()
@@ -32,5 +21,16 @@ const fetchTodos = (filter) => (dispatch, getState) => {
     })
   })
 }
+
+const addTodo = (text) => (dispatch, getState) => {
+  return api.addTodo(text).then(response => {
+    dispatch({
+      type: 'ADD_TODO_SUCCESS',
+      response
+    })
+  })
+}
+
+const toggleTodo = (id) => id
 
 const actions = { addTodo, toggleTodo, fetchTodos }

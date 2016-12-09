@@ -17,11 +17,29 @@ const fakeDatabase = {
 const delay = (ms) =>
   new Promise(resolve => setTimeout(resolve, ms))
 
-const fetchTodos = (filter) => {
-  return delay(1500).then(() => {
-    if (Math.random() > 0.5) {
-      throw new Error('Boom!')
+const addTodo = (text) =>
+  delay(500).then(() => {
+    const todo = {
+      id: uuid.v4(),
+      text,
+      completed: false
     }
+    fakeDatabase.todos.push(todo)
+    return todo
+  })
+
+const toggleTodo = (id) =>
+  delay(500).then(() => {
+    const todo = fakeDatabase.todos.find(t => t.id === id)
+    todo.completed = !todo.completed
+    return todo
+  })
+
+const fetchTodos = (filter) => {
+  return delay(500).then(() => {
+    // if (Math.random() > 0.5) {
+    //   throw new Error('Boom!')
+    // }
     switch (filter) {
       case 'all': return fakeDatabase.todos
       case 'active': return fakeDatabase.todos.filter((t) => t.completed !== true)
@@ -31,4 +49,4 @@ const fetchTodos = (filter) => {
   })
 }
 
-const api = { fetchTodos }
+const api = { addTodo, toggleTodo, fetchTodos }
