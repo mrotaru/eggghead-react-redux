@@ -1,3 +1,5 @@
+const { normalize } = window.normalizr
+
 const fetchTodos = (filter) => (dispatch, getState) => {
   if (getIsFetching(getState(), filter)) {
     return Promise.resolve()
@@ -8,12 +10,13 @@ const fetchTodos = (filter) => (dispatch, getState) => {
     filter
   })
 
-  return api.fetchTodos(filter).then(response =>
+  return api.fetchTodos(filter).then(response => {
     dispatch({
       type: 'FETCH_TODOS_SUCCESS',
       filter,
-      response
-    }), error => {
+      response: normalize(response, schema.arrayOfTodos)
+    })
+  }, error => {
     dispatch({
       type: 'FETCH_TODOS_ERROR',
       filter,
@@ -26,7 +29,7 @@ const addTodo = (text) => (dispatch, getState) => {
   return api.addTodo(text).then(response => {
     dispatch({
       type: 'ADD_TODO_SUCCESS',
-      response
+      response: normalize(response, schema.todo)
     })
   })
 }
