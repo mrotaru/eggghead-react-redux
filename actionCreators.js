@@ -34,6 +34,13 @@ const addTodo = (text) => (dispatch, getState) => {
   })
 }
 
-const toggleTodo = (id) => id
+const toggleTodo = (id) => (dispatch) => {
+  api.toggleTodo(id).then(response => {
+    dispatch({
+      type: 'TOGGLE_TODO_SUCCESS',
+      response: normalize(response, schema.todo)
+    })
+  })
+}
 
 const actions = { addTodo, toggleTodo, fetchTodos }

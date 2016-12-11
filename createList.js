@@ -3,6 +3,17 @@ const { combineReducers } = Redux
 // reducer generator
 // returns a reducer for a single filter
 const createList = (filter) => {
+  const handleToggle = (state, action) => {
+    const todo = action.response.entities.todos[action.response.result]
+    if (filter === 'completed' && !todo.completed) {
+      return state.filter(t => t !== todo.id)
+    }
+    if (filter === 'active' && todo.completed) {
+      return state.filter(t => t !== todo.id)
+    }
+    return state
+  }
+
   const ids = (state = [], action) => {
     switch (action.type) {
       case 'FETCH_TODOS_SUCCESS':
@@ -13,6 +24,8 @@ const createList = (filter) => {
         return filter !== 'completed'
           ? [...state, action.response.result]
           : state
+      case 'TOGGLE_TODO_SUCCESS':
+        return handleToggle(state, action)
       default:
         return state
     }
