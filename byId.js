@@ -2,7 +2,7 @@ const byId = (state = {}, action) => {
   if (action.response) {
     return {
       ...state,
-      ...action.response.todos
+      ...action.response.entities.todos
     }
   }
   return state
