@@ -4,14 +4,15 @@ const { combineReducers } = Redux
 // returns a reducer for a single filter
 const createList = (filter) => {
   const handleToggle = (state, action) => {
-    const todo = action.response.entities.todos[action.response.result]
-    if (filter === 'completed' && !todo.completed) {
-      return state.filter(t => t !== todo.id)
-    }
-    if (filter === 'active' && todo.completed) {
-      return state.filter(t => t !== todo.id)
-    }
-    return state
+    const { result: toggledId, entities } = action.response
+    const { completed } = entities.todos[toggledId]
+    const shouldRemove = (
+      (completed && filter === 'active') ||
+      (!completed && filter === 'completed')
+    )
+    return shouldRemove
+      ? state.filter(t => t !== toggledId)
+      : state
   }
 
   const ids = (state = [], action) => {
