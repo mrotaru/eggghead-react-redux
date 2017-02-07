@@ -1,7 +1,7 @@
-const { Schema, arrayOf } = window.normalizr
+const { schema } = window.normalizr
 
-const todo = new Schema('todos')
-const schema = {
+const todo = new schema.Entity('todos')
+const schemata = {
   todo,
-  arrayOfTodos: arrayOf(todo)
+  arrayOfTodos: [todo]
 }

@@ -14,7 +14,7 @@ const fetchTodos = (filter) => (dispatch, getState) => {
     dispatch({
       type: 'FETCH_TODOS_SUCCESS',
       filter,
-      response: normalize(response, schema.arrayOfTodos)
+      response: normalize(response, schemata.arrayOfTodos)
     })
   }, error => {
     dispatch({
@@ -29,7 +29,7 @@ const addTodo = (text) => (dispatch, getState) => {
   return api.addTodo(text).then(response => {
     dispatch({
       type: 'ADD_TODO_SUCCESS',
-      response: normalize(response, schema.todo)
+      response: normalize(response, schemata.todo)
     })
   })
 }
@@ -38,7 +38,7 @@ const toggleTodo = (id) => (dispatch) => {
   api.toggleTodo(id).then(response => {
     dispatch({
       type: 'TOGGLE_TODO_SUCCESS',
-      response: normalize(response, schema.todo)
+      response: normalize(response, schemata.todo)
     })
   })
 }
